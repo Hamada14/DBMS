@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.13" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
+  <class id="1" language="java" name="JDBC.connection.DBMSConnection" project="DBMS" 
+    file="/DBMS/src/JDBC/connection/DBMSConnection.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="1125" width="285" x="-59" y="-404"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="JDBC.driver.DBMSDriver" project="DBMS" 
+    file="/DBMS/src/JDBC/driver/DBMSDriver.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="392" y="472"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="JDBC.ResultSet.Resultset" project="DBMS" 
+    file="/DBMS/src/JDBC/ResultSet/Resultset.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="916" y="1944"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="JDBC.resultsetMetaData.ResultsetMetaData" project="DBMS" 
+    file="/DBMS/src/JDBC/resultsetMetaData/ResultsetMetaData.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1436" y="144"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="JDBC.statement.StatementBatch" project="DBMS" 
+    file="/DBMS/src/JDBC/statement/StatementBatch.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="153" width="171" x="2198" y="161"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="JDBC.statement.Statement" project="DBMS" 
+    file="/DBMS/src/JDBC/statement/Statement.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="243" width="174" x="2198" y="354"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="JDBC.statement.DBMSStatement" project="DBMS" 
+    file="/DBMS/src/JDBC/statement/DBMSStatement.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="945" width="236" x="2198" y="-824"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <association id="8">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="9" name="statementBatch"/>      
+      <multiplicity id="10" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="11">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="12" name="statements"/>      
+      <multiplicity id="13" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="6" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="14">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="15" name="connection"/>      
+      <multiplicity id="16" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    sort-features="false" accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

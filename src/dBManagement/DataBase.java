@@ -2,23 +2,20 @@ package dBManagement;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
 
-import org.apache.commons.io.FileUtils;
+import query.DBQuery;
+import query.Query;
 
 public class DataBase {
-
 
 	private Table tableController;
 
 	public DataBase() {
-		tableController = new Table();
 	}
 
-	public boolean addTable(String tableName, String[][] tableData, String dbPath) {
+	public Query addTable(String tableName, String[][] tableData, String dbPath, int parserType) {
 		if (hasTable(tableName, dbPath)) {
-			errorMessage("This table already exists");
-			return false;
+			return new DBQuery(false, "This table name " + tableName + " already exists");
 		}
 		int len = tableData.length;
 		String[] columnNames = new String[len];
@@ -28,108 +25,125 @@ public class DataBase {
 			colDataType[i] = tableData[i][1];
 		}
 		String tablePath = dbPath + File.separator + tableName;
-		boolean commandDone = false;
 		try {
 			new File(tablePath).mkdir();
-			new Table(tableName, tablePath, columnNames, colDataType);
-			commandDone = true;
+			new Table(tableName, tablePath, columnNames, colDataType, parserType);
+			return new DBQuery(true, "Table " + tableName + " is created");
 		} catch (Exception e) {
-			System.out.println("Error upon create of the file");
-			System.out.println("Make sure the directory isn't in use");
+			return new Query(false, "Error upon file creation for table: " + tableName);
 		}
-		return commandDone;
 	}
 
-	public boolean dropTable(String tableName, String dbPath) {
+	public Query dropTable(String tableName, String dbPath) {
 		if (!hasTable(tableName, dbPath)) {
-			errorMessage("No such table");
-			return false;
+			return new Query(false, "No such table named: " + tableName);
 		}
 		String fullPath = dbPath + File.separator + tableName;
-		return deleteDBDirectory(new File(fullPath));
+		deleteDBDirectory(new File(fullPath));
+		return new DBQuery(true, "Table " + tableName + " is dropped");
 	}
 
-	private boolean deleteDBDirectory(File file) {
+	void deleteDBDirectory(File f) {
 		try {
-			FileUtils.deleteDirectory(file);
-			return true;
+			if (f.isDirectory()) {
+				for (File c : f.listFiles())
+					deleteDBDirectory(c);
+			}
+			f.delete();
+		} catch (Exception e)  {
+			e.printStackTrace();
+		}
+	}
+
+	private boolean fileExists(File f) {
+		try {
+			return f.exists() && f.getCanonicalPath().endsWith(f.getName());
 		} catch (IOException e) {
 			return false;
 		}
 	}
 
-	private boolean fileExists(File f){
-    try {
-      return f.exists() && f.getCanonicalPath().endsWith(f.getName());
-    } catch (IOException e) {
-      return false;
-    }
-  }
-	
 	public boolean hasTable(String tableName, String dbPath) {
 		String fullDirectoryPath = dbPath + File.separator + tableName;
 		File dbDir = new File(fullDirectoryPath);
 		return fileExists(dbDir);
 	}
-	
-	public LinkedList<LinkedList<String>> selectQuery(String tableName, String[] colName, String condition, String dbPath) {
-		LinkedList<LinkedList<String>> reqQuery = null;
-		if (!hasTable(tableName, dbPath)) {
-			errorMessage("There is no such table");
-			return reqQuery;
-		}
-		try {
-			String fullPath = dbPath + File.separator + tableName + File.separator + tableName;
-			reqQuery = tableController.selectFromTable(colName, condition, fullPath);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return reqQuery;
-	}
 
-	public boolean insertQuery(String tableName, String[] inputName, String[] varName, String dbPath) {
+	public Query selectQuery(String tableName, String[] colName, String condition, boolean distinct, String dbPath, int parserType) {
 		if (!hasTable(tableName, dbPath)) {
-			errorMessage("There is no such table");
-			return false;
+			return new Query(false, "There is no such table named: " + tableName);
 		}
 		try {
+		    tableController = new Table(tableName);
 			String fullPath = dbPath + File.separator + tableName + File.separator + tableName;
-			return tableController.insertIntoTable(inputName, varName, fullPath);
+			return tableController.selectFromTable(colName, condition, distinct, fullPath, parserType);
 		} catch (Exception e) {
-			errorMessage("Invalid Query");
-			return false;
-		}
-	}
-	
-	public boolean deleteQuery(String tableName, String condition, String dbPath) {
-		if (!hasTable(tableName, dbPath)) {
-			errorMessage("There is no such table");
-			return false;
-		}
-		try {
-			String fullPath = dbPath + File.separator + tableName + File.separator + tableName;
-			return tableController.deleteFromTable(condition, fullPath);
-		} catch (Exception e) {
-			errorMessage("Invalid deletion");
-			return false;
+			return new Query(false, "Unexpected error!");
 		}
 	}
 
-	public boolean updateQuery(String tableName, String[] input, String[] var, String condition, String dbPath) {
-		if (!hasTable(tableName, dbPath)) {
-			errorMessage("There is no such table");
-			return false;
+	public Query insertQuery(String tableName, String[] inputName, String[] varName, String dbPath, int parserType) {
+	  if (!hasTable(tableName, dbPath)) {
+			return new Query(false, "There is no such table named: " + tableName);
 		}
 		try {
+		    tableController = new Table(tableName);
 			String fullPath = dbPath + File.separator + tableName + File.separator + tableName;
-			return tableController.updateTable(input, var, condition, fullPath);
+			return tableController.insertIntoTable(inputName, varName, fullPath, parserType);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
+			return new Query(false, "Insertion failed");
 		}
 	}
-	
-	private void errorMessage(String error) {
-		System.out.println(error);
+
+	public Query insertQuery(String tableName, String[] varName, String dbPath, int parserType) {
+		if(!hasTable(tableName, dbPath)) {
+			return new Query(false, "There is no such table");
+		}
+		try {
+		    tableController = new Table(tableName);
+			String fullPath = dbPath + File.separator + tableName + File.separator + tableName;
+			return tableController.insertIntoTable(varName, fullPath, parserType);
+		} catch (Exception e) {
+			return new Query(false, "Invalid Query, Insert Failed");
+		}
+	}
+
+	public Query deleteQuery(String tableName, String condition, String dbPath, int parserType) {
+		if (!hasTable(tableName, dbPath)) {
+			return new Query(false, "There is no such table named: " + tableName);
+		}
+		try {
+		    tableController = new Table(tableName);
+			String fullPath = dbPath + File.separator + tableName + File.separator + tableName;
+			return tableController.deleteFromTable(condition, fullPath, parserType);
+		} catch (Exception e) {
+			return new Query(false, "Invalid deletion");
+		}
+	}
+
+	public Query updateQuery(String tableName, String[] input, String[] var, String condition, String dbPath, int parserType) {
+		if (!hasTable(tableName, dbPath)) {
+			return new Query(false, "There is no such table named: " + tableName);
+		}
+		try {
+		    tableController = new Table(tableName);
+			String fullPath = dbPath + File.separator + tableName + File.separator + tableName;
+			return tableController.updateTable(input, var, condition, fullPath, parserType);
+		} catch (Exception e) {
+			return new Query(false, "invalid condition");
+		}
+	}
+
+	public Query alterQuery(String tableName, String[][] columns, String dbPath, int parserType) {
+		if (!hasTable(tableName, dbPath)) {
+			return new Query(false, "There is no such table named: " + tableName);
+		}
+		try {
+		    tableController = new Table(tableName);
+			String fullPath = dbPath + File.separator + tableName + File.separator + tableName;
+			return tableController.alterTable(columns, fullPath, parserType);
+		} catch (Exception e) {
+			return new Query(false, "Error in alter command");
+		}
 	}
 }

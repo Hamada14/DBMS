@@ -1,23 +1,27 @@
 package dBManagement;
 
-import java.util.LinkedList;
+import query.Query;
 
 public interface DBInterface {
 
-    public boolean dropDataBase(String dbName);
+	public Query dropDataBase(String dbName);
 
-    public boolean addDataBase(String dbName);
+	public Query addDataBase(String dbName);
 
-    public boolean addTable(String tableName, String[][] tableData);
+	public Query addTable(String tableName, String[][] tableData);
 
-    public boolean dropTable(String tableName);
+	public Query dropTable(String tableName);
 
-    public LinkedList<LinkedList<String>> selectQuery(String tableName, String[] colName, String condition);
+	public Query selectQuery(String tableName, String[] colName, String condition, boolean distinct);
 
-    public boolean insertQuery(String tableName, String[] inputName, String[] varName);
+	public Query insertQuery(String tableName, String[] inputName, String[] varName);
 
-    public boolean deleteQuery(String tableName, String condition);
+	public Query insertQuery(String tableName, String[] varName);
 
-    public boolean updateQuery(String tableName, String[][] data, String condition);
+	public Query deleteQuery(String tableName, String condition);
+
+	public Query updateQuery(String tableName, String[][] data, String condition);
+
+	public Query alterQuery(String tableName, String[][] columns);
 
 }

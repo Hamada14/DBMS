@@ -1,0 +1,18 @@
+package databases;
+
+option java_package = "com.protocol.buffers";
+option java_outer_classname = "TabularStructure";
+
+message ColInformation {
+	optional string colName = 1;
+	optional string colType = 2;
+}
+
+message Entry {
+	repeated string information = 1; 
+}
+
+message Table {
+	repeated ColInformation columns = 1;
+	repeated Entry entry = 2;
+}
